@@ -1,5 +1,5 @@
-import { getPairDetails } from "./tradeservice";
-import { delay, stopLoss, trailingstopLoss } from "../../config";
+import { getPairDetails, sellToken } from "./tradeservice";
+import { delay, noGreedProfit, stopLoss, trailingstopLoss } from "../../config";
 import logger from './logger';
 import Tradex from './db';
 import axios from "axios";
@@ -55,6 +55,7 @@ class OrderBookingService {
                     if (profit < (1 - trailingstopLoss / 100) * oldProfit && oldProfit != 0) {
 
                         logger.info(' Selling Token due to Trailing stop reduced to ' + profit.toFixed(2) + ' %');
+                        sellToken(this.tokenAddress);
 
                         trades.update({ sellAtTime: new Date(), sellAtPrice: parseFloat(quoteInBNB), profit: profit })
                     } else if (profit > oldProfit) {
@@ -66,10 +67,12 @@ class OrderBookingService {
                     } else if (quoteInBNB <= (1 - stopLoss / 100) * (trades.buyAtPrice)) {
                         logger.info(' Selling Token due to Stoploss reached ' + quoteInBNB);
                         trades.update({ sellAtTime: new Date(), sellAtPrice: parseFloat(quoteInBNB), profit: profit })
+                        sellToken(this.tokenAddress);
 
-                    } else if (profit >= 25) {
+                    } else if (profit >= noGreedProfit) {
                         logger.info(' Selling Token due to NoGreedPoint reached ' + quoteInBNB);
                         trades.update({ sellAtTime: new Date(), sellAtPrice: parseFloat(quoteInBNB), profit: profit })
+                        sellToken(this.tokenAddress);
 
                     }
                 } else {

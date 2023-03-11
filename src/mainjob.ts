@@ -1,6 +1,6 @@
 import Parse from 'parse/node'
-import { appId, appKey, wsUrl, liquidityBarrier, bnbToInvestPerToken } from '../config';
-import { checkHoneyPot, checkAbiHoneyPot, honeypotCheckerCaller, getPairDetails } from './lib/tradeservice';
+import { appId, appKey, wsUrl, liquidityBarrier, bnbToInvestPerToken, maxBuyTaxAllowed, maxSellTaxAllowed } from '../config';
+import { checkHoneyPot, checkAbiHoneyPot, honeypotCheckerCaller, getPairDetails, buyToken } from './lib/tradeservice';
 import Tradex,{ sequelize } from './lib/db';
  import logger from './lib/logger';
 import OrderBookingService from './lib/orderbookingservice';
@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const main = async () => {
 
-    logger.info('Starting the DexVader Job '+appId+":"+appKey);
+    logger.info('Starting the DexVader Job ');
 
 
     Parse.initialize(appId, appKey);
@@ -80,7 +80,7 @@ const main = async () => {
                     console.log(Number(sellTax) >= 0)
                     console.log(response.data.message === 'OK') */
 
-                     if (!honeyPot && Number(buyTax) <= 20 && Number(sellTax) <= 20 && Number(buyTax) >= 0 && Number(sellTax) >= 0 && response.data.message === 'OK') {
+                     if (!honeyPot && Number(buyTax) <= maxBuyTaxAllowed && Number(sellTax) <= maxSellTaxAllowed && Number(buyTax) >= 0 && Number(sellTax) >= 0 && response.data.message === 'OK') {
                         logger.info('Saving first Initial Data ')
 
                         const tradex = Tradex.build(data);
@@ -103,25 +103,29 @@ const main = async () => {
                                     quoteInBNB= item.priceNative;
                                 })
                             }
- 
-                            if (quoteInBNB != null   ) {
-                                logger.info('    QUOTE For  ' + data.name + ' is ' + + quoteInBNB)
 
-                                const quantity = Number((bnbToInvestPerToken/Number(quoteInBNB)).toFixed(4));
-
-                                const trades = await Tradex.findOne({
-                                    where: {
-                                        buyAtTime: null,
-                                        tokenAddress: data.tokenAddress
-                                    }
-                                });
-                                trades.update({ quantity:quantity,buyAtTime: new Date(),investment: bnbToInvestPerToken, buyAtPrice: quoteInBNB, profit: 0.0 }) 
-
-                                
-                                const order = new OrderBookingService(data.tokenAddress);
-                                await order.startBooking();
-
+                            if(quoteInBNB === null){
+                                logger.error(' Dex API Error no pair found on dexscreener API Call')
                             }
+                            else
+                            await buyToken(data.tokenAddress).then( async(recpt)=>{
+
+                                if (recpt !== null) {
+                
+                                    const order = new OrderBookingService(data.tokenAddress);
+                                    await order.startBooking();
+                                    const quantity = Number((bnbToInvestPerToken/Number(quoteInBNB)).toFixed(4));
+
+                                    const trades = await Tradex.findOne({
+                                        where: {
+                                            buyAtTime: null,
+                                            tokenAddress: data.tokenAddress
+                                        }
+                                    });
+                                    trades.update({ quantity:quantity,buyAtTime: new Date(),investment: bnbToInvestPerToken, buyAtPrice: quoteInBNB, profit: 0.0 }) 
+
+                                 } 
+                              })  
 
                         } catch (error:any) {
                             logger.error("ERROR PLACING TRADE " + error.message);

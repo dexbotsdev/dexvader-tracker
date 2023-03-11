@@ -144,7 +144,7 @@ let amountOutMin = 0;
   console.log( 
      `Buying Token
      =================
-     tokenIn: ${((ethers.utils.formatUnits(amountIn,18))).toString()}   (BNB)
+     tokenIn: ${((ethers.utils.formatUnits(amountIn,18))).toString()}   (WBNB)
      tokenOut: ${Number(ethers.utils.formatUnits(amountOutMin,decimalsdest)).toFixed(2)}  
    `);
 

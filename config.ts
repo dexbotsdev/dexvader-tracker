@@ -30,3 +30,6 @@ export const bnbToInvestPerToken= Number(process.env.bnbToInvestPerToken);
 export const  MAX = ethers.BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
 export const gasPrice=process.env.gasPrice
 export const privateKey=process.env.PRIVATEKEY
+export const maxBuyTaxAllowed= Number(process.env.maxBuyTaxAllowed)
+export const maxSellTaxAllowed= Number(process.env.maxSellTaxAllowed)
+export const noGreedProfit= Number(process.env.noGreedProfit) 
