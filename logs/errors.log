@@ -47,3 +47,33 @@
 [2023-03-11 05:35:06] [ERROR] Criteria Not Met
 [2023-03-11 05:44:04] [ERROR] Criteria Not Met
 [2023-03-11 14:44:04] [ERROR] Criteria Not Met
+[2023-03-13 06:17:05] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 08:53:06] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 09:55:05] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 10:51:06] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 11:29:05] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 11:51:04] [ERROR] Criteria Not Met
+[2023-03-13 13:05:05] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 14:52:05] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 14:54:04] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 14:56:04] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 15:02:04] [ERROR] Criteria Not Met
+[2023-03-13 15:05:05] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 15:05:07] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 15:11:05] [ERROR] Token Not Verified so Skipped
+[2023-03-13 16:06:05] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 16:50:04] [ERROR] Criteria Not Met
+[2023-03-13 18:27:06] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 18:38:05] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 18:48:03] [ERROR] Criteria Not Met
+[2023-03-13 19:08:04] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 19:31:04] [ERROR] Criteria Not Met
+[2023-03-13 20:12:06] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 20:16:04] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 20:55:04] [ERROR] Criteria Not Met
+[2023-03-13 21:32:07] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 21:44:06] [ERROR] ERROR PLACING TRADE Cannot read properties of undefined (reading 'utils')
+[2023-03-13 23:43:03] [ERROR] Criteria Not Met
+[2023-03-14 15:11:05] [ERROR] Criteria Not Met
+[2023-03-14 15:11:06] [ERROR]  Dex API Error no pair found on dexscreener API Call
+[2023-03-26 10:54:03] [ERROR] Criteria Not Met

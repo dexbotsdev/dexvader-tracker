@@ -1,21 +1,26 @@
 import { getPairDetails, sellToken } from "./tradeservice";
-import { delay, noGreedProfit, stopLoss, trailingstopLoss } from "../../config";
+import { appId, appKey, delay, httpUrl, noGreedProfit, stopLoss, trailingstopLoss } from "../../config";
 import logger from './logger';
 import Tradex from './db';
 import axios from "axios";
+import Parse from 'parse/node';
 
 class OrderBookingService {
-    tokenAddress: any;
-    constructor(tokenAddress: any) {
+    tokenAddress: any; 
+     constructor(tokenAddress: any) {
         this.tokenAddress = tokenAddress
     }
 
     async startBooking() {
         const ms = delay
+        Parse.initialize(appId, appKey); 
+        const DexVaderPT = Parse.Object.extend("DexVaderPT");
+        Parse.serverURL = httpUrl
 
         const startTime = new Date().getTime();
         const timer = setInterval(async () => {
 
+     
             try {
 
                 const trades = await Tradex.findOne({
@@ -24,9 +29,12 @@ class OrderBookingService {
                         tokenAddress: this.tokenAddress
                     }
                 });
+                
+                
 
                 if (trades !== null) {
                     const oldProfit = Number(trades.profit);
+                    const oldQuote = Number(trades.prevQuote);
 
                     const quoteinUsd = await getPairDetails(this.tokenAddress);
                     const dexscreener = await axios
@@ -44,7 +52,7 @@ class OrderBookingService {
                                 quoteInBNB = item.priceNative;
                         })
                     }
-                    logger.info('Buy Price  is ' + trades.buyAtPrice)
+                    logger.info('Buy Price  is ' + trades.buyAtPrice.toFixed(18))
 
                     logger.info('Current Price is ' + quoteInBNB)
                     const profit = 100 * (quoteInBNB - trades.buyAtPrice) / trades.buyAtPrice;
@@ -52,12 +60,51 @@ class OrderBookingService {
                     // Trailing stoploss
                     logger.info(' Old Profits for Token is ' + oldProfit.toFixed(2) + ' %');
                     logger.info(' New  Profits for Token is ' + profit.toFixed(2) + ' %');
-                    if (profit < (1 - trailingstopLoss / 100) * oldProfit && oldProfit != 0) {
+                    if (profit < (1 - trailingstopLoss / 100) * oldQuote && oldProfit != 0) {
 
-                        logger.info(' Selling Token due to Trailing stop reduced to ' + profit.toFixed(2) + ' %');
-                        sellToken(this.tokenAddress);
-
+                        logger.info(' Selling Token due to Trailing stop , price came down to ' + quoteInBNB  );
+ 
                         trades.update({ sellAtTime: new Date(), sellAtPrice: parseFloat(quoteInBNB), profit: profit })
+
+                        const signal = new DexVaderPT({
+                            "tokenAddress": trades.tokenAddress, 
+                            "name": trades.name,
+                            "symbol": trades.symbol, 
+                            "pairAddress": trades.pairAddress,
+                            "investment":trades.investment,
+                            "signaledAt": trades.signaledAt,
+                            "baseAddress": trades.baseAddress, 
+                            "baseName":   trades.baseName,
+                            "signalPrice": trades.signalPrice, 
+                            "buyAtTime":   trades.buyAtTime,
+                            "buyAtPrice":  trades.buyAtPrice,
+                            "sellAtTime":  new Date(),
+                            "sellAtPrice": parseFloat(quoteInBNB),
+                            "profit":   profit,
+                            "quantity":   trades.quantity,
+        
+                        });
+
+                        console.log({
+                            "tokenAddress": trades.tokenAddress, 
+                            "name": trades.name,
+                            "symbol": trades.symbol, 
+                            "pairAddress": trades.pairAddress,
+                            "investment":trades.investment,
+                            "signaledAt": trades.signaledAt,
+                            "baseAddress": trades.tokenAddress, 
+                            "baseName":   trades.baseName,
+                            "signalPrice": trades.signalPrice, 
+                            "buyAtTime":   trades.buyAtTime,
+                            "buyAtPrice":  trades.buyAtPrice,
+                            "sellAtTime":  new Date(),
+                            "sellAtPrice": parseFloat(quoteInBNB),
+                            "profit":   profit,
+                            "quantity":   trades.quantity,
+        
+                        })
+                      signal.save();
+
                     } else if (profit > oldProfit) {
 
                         logger.info(' Incrementing Token Profit   ' + profit.toFixed(2) + ' %');
@@ -67,16 +114,52 @@ class OrderBookingService {
                     } else if (quoteInBNB <= (1 - stopLoss / 100) * (trades.buyAtPrice)) {
                         logger.info(' Selling Token due to Stoploss reached ' + quoteInBNB);
                         trades.update({ sellAtTime: new Date(), sellAtPrice: parseFloat(quoteInBNB), profit: profit })
-                        sellToken(this.tokenAddress);
+                        const signal = new DexVaderPT({
+                            "tokenAddress": trades.tokenAddress, 
+                            "name": trades.name,
+                            "symbol": trades.symbol, 
+                            "pairAddress": trades.pairAddress,
+                            "investment":trades.investment,
+                            "signaledAt": trades.signaledAt,
+                            "baseAddress": trades.baseAddress, 
+                            "baseName":   trades.baseName,
+                            "signalPrice": trades.signalPrice, 
+                            "buyAtTime":   trades.buyAtTime,
+                            "buyAtPrice":  trades.buyAtPrice,
+                            "sellAtTime":  new Date(),
+                            "sellAtPrice": parseFloat(quoteInBNB),
+                            "profit":   profit,
+                            "quantity":   trades.quantity,
+        
+                        });
+                        signal.save();
 
                     } else if (profit >= noGreedProfit) {
                         logger.info(' Selling Token due to NoGreedPoint reached ' + quoteInBNB);
                         trades.update({ sellAtTime: new Date(), sellAtPrice: parseFloat(quoteInBNB), profit: profit })
-                        sellToken(this.tokenAddress);
-
+                        const signal = new DexVaderPT({
+                            "tokenAddress": trades.tokenAddress, 
+                            "name": trades.name,
+                            "symbol": trades.symbol, 
+                            "pairAddress": trades.pairAddress,
+                            "investment":trades.investment,
+                            "signaledAt": trades.signaledAt,
+                            "baseAddress": trades.baseAddress, 
+                            "baseName":   trades.baseName,
+                            "signalPrice": trades.signalPrice, 
+                            "buyAtTime":   trades.buyAtTime,
+                            "buyAtPrice":  trades.buyAtPrice,
+                            "sellAtTime":  new Date(),
+                            "sellAtPrice": parseFloat(quoteInBNB),
+                            "profit":   profit,
+                            "quantity":   trades.quantity,
+        
+                        });
+                        signal.save();
                     }
                 } else {
                     clearInterval(timer)
+                    
                 }
 
             } catch (error) {

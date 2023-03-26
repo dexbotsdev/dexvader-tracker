@@ -108,9 +108,10 @@ const main = async () => {
                                 logger.error(' Dex API Error no pair found on dexscreener API Call')
                             }
                             else
-                            await buyToken(data.tokenAddress).then( async(recpt)=>{
+                           // await buyToken(data.tokenAddress).then( async(recpt)=>{
 
-                                if (recpt !== null) {
+                               // if (recpt !== null) 
+                               {
                 
                                     const order = new OrderBookingService(data.tokenAddress);
                                     await order.startBooking();
@@ -124,10 +125,11 @@ const main = async () => {
                                     });
                                     trades.update({ quantity:quantity,buyAtTime: new Date(),investment: bnbToInvestPerToken, buyAtPrice: quoteInBNB, profit: 0.0 }) 
 
-                                 } 
-                              })  
+                                  } 
+                             // })  
 
                         } catch (error:any) {
+                            console.log(error);
                             logger.error("ERROR PLACING TRADE " + error.message);
                         }
 
@@ -136,6 +138,8 @@ const main = async () => {
 
                 })
                 .catch((err) => {
+                    console.log(err);
+
                     logger.error('Token Not Verified so Skipped')
                 });
                 

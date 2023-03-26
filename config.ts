@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 export const appId="Z6R6NI8P6LR2ZIE0B9G1";
 export const appKey="QCS13J3VY5P6C0SV9CXFW24P8CQQ3RS8EQCX3LHB";
 export const wsUrl='ws://144.24.158.75:1337/parse';
-export const httpUrl='ws://144.24.158.75:1337/parse';
+export const httpUrl='http://144.24.158.75:1337/parse';
 
 export const rpc_wss='wss://bsc-mainnet.nodereal.io/ws/v1/ea49d5c625d34b069be219d151e4f1e8';
 export const rpc_http='https://bsc-mainnet.nodereal.io/ws/v1/ea49d5c625d34b069be219d151e4f1e8';
